@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin & Padding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100%;
+        }
+
+        #padre {
+            width: 400px;
+            height: 400px;
+            /* background-color: blue; */
+            outline: 3px solid black;
+
+        }
+
+        #hijo {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            position: relative;
+            top: 45%;
+            left: 40%;
+        }
+
+        .cola {
+            width: 20px;
+            height: 20px;
+            background-color: blue;
+            position: fixed;
+        }
+
+        #hijo2 {
+            width: 20px;
+            height: 20px;
+            background-color: green;
+            position: relative;
+        }
+
+        .puntaje {
+            display: inline-block;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <div id="padre">
+        <div id="hijo"></div>
+        <div id="hijo2"></div>
+    </div>
+    <h2 class="puntaje">Puntaje:</h2>
+    <h2 class="puntaje" id="score">0</h2>
+</body>
+
+</html>
+
+<script>
+    const padre = document.getElementById('padre');
+    const player = document.getElementById('hijo');
+    const food = document.getElementById('hijo2');
+    const scoreText = document.getElementById('score');
+
+
+    const H = 380;
+    const W = 380;
+
+    let movement = 20;
+    let score = 0;
+    let direction = 'NONE'
+    let cola = []
+
+    function changePuntaje() {
+        scoreText.innerHTML = score;
+    }
+
+    function positionFood() {
+        const positionRandom = Math.floor(Math.random() * (19 - 1) + 1) * 20;
+        food.style.left = positionRandom + 'px';
+        food.style.top = positionRandom + 'px';
+    }
+
+    function createCola() {
+        const newCola = document.createElement('div')
+        newCola.setAttribute('class', 'cola')
+        cola.push(newCola)
+        player.appendChild(newCola)
+        console.log(cola);
+
+    }
+
+    function dead() {
+        direction = 'NONE';
+        player.style.top = 45 + '%';
+        player.style.left = 40 + '%';
+        positionFood()
+    }
+
+    function eatFoot() {
+        if (player.offsetTop == food.offsetTop && player.offsetLeft == food.offsetLeft) {
+            score += 10;
+            positionFood()
+            changePuntaje()
+            createCola()
+        }
+    }
+
+    function collapse() {
+        if (player.offsetTop > H || player.offsetTop < 0 ||
+            player.offsetLeft > W || player.offsetLeft < 0) {
+            dead();
+        }
+    }
+
+    function positionCola(playerPos) {
+        if (cola.length > 0) {
+
+            currentPos = [0, 0]
+            newPos = [playerPos[0], playerPos[1]]
+
+            cola.forEach(e => {
+                currentPos = [e.offsetTop, e.offsetLeft]
+                e.style.top = newPos[0] + 'px';
+                e.style.left = newPos[1] + 'px';
+                newPos = currentPos;
+            });
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        switch (e.keyCode) {
+            case 83:
+            case 40:
+                direction = 'DOWN'
+                break;
+            case 87:
+            case 38:
+                direction = 'UP'
+                break;
+            case 65:
+            case 37:
+                direction = 'LEFT'
+                break;
+            case 68:
+            case 39:
+                direction = 'RIGHT'
+                break;
+
+            default:
+                break;
+
+        }
+    });
+
+    // UPDATE GAME
+    positionFood()
+    setInterval(() => {
+        
+        playerPosition = [player.offsetTop, player.offsetLeft]
+        positionCola(playerPosition)
+        switch (direction) {
+            case 'DOWN':
+                player.style.top = player.offsetTop + movement + 'px';
+                break;
+            case 'UP':
+                player.style.top = player.offsetTop - movement + 'px';
+                break;
+            case 'LEFT':
+                player.style.left = player.offsetLeft - movement + 'px';
+                break;
+            case 'RIGHT':
+                player.style.left = player.offsetLeft + movement + 'px';
+                break;
+
+            default:
+                break;
+        }
+        eatFoot();
+        collapse();
+    }, 200);
+
+</script>
