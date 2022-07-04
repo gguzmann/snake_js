@@ -50,7 +50,6 @@
         .puntaje {
             display: inline-block;
         }
-
     </style>
 </head>
 
@@ -95,6 +94,8 @@
     function createCola() {
         const newCola = document.createElement('div')
         newCola.setAttribute('class', 'cola')
+        newCola.style.top = '0px';
+        newCola.style.left = '0px';
         cola.push(newCola)
         player.appendChild(newCola)
         console.log(cola);
@@ -105,6 +106,11 @@
         direction = 'NONE';
         player.style.top = 45 + '%';
         player.style.left = 40 + '%';
+        cola.forEach(e => {
+            e.remove();
+        })
+        cola = [];
+
         positionFood()
     }
 
@@ -122,6 +128,13 @@
             player.offsetLeft > W || player.offsetLeft < 0) {
             dead();
         }
+
+        cola.forEach(element => {
+            if(element.offsetTop == player.offsetTop && element.offsetLeft == player.offsetLeft)
+            {
+                dead();
+            }
+        })
     }
 
     function positionCola(playerPos) {
@@ -167,7 +180,7 @@
     // UPDATE GAME
     positionFood()
     setInterval(() => {
-        
+
         playerPosition = [player.offsetTop, player.offsetLeft]
         positionCola(playerPosition)
         switch (direction) {
