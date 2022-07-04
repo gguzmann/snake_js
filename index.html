@@ -94,8 +94,8 @@
     function createCola() {
         const newCola = document.createElement('div')
         newCola.setAttribute('class', 'cola')
-        newCola.style.top = '0px';
-        newCola.style.left = '0px';
+        newCola.style.top = '200%';
+        newCola.style.left = '200%';
         cola.push(newCola)
         player.appendChild(newCola)
         console.log(cola);
@@ -104,6 +104,8 @@
 
     function dead() {
         direction = 'NONE';
+        score = 0;
+        changePuntaje();
         player.style.top = 45 + '%';
         player.style.left = 40 + '%';
         cola.forEach(e => {
@@ -156,19 +158,19 @@
         switch (e.keyCode) {
             case 83:
             case 40:
-                direction = 'DOWN'
+                if(direction != 'UP') direction = 'DOWN'
                 break;
             case 87:
             case 38:
-                direction = 'UP'
+            if(direction != 'DOWN') direction = 'UP'
                 break;
             case 65:
             case 37:
-                direction = 'LEFT'
+            if(direction != 'RIGHT') direction = 'LEFT'
                 break;
             case 68:
             case 39:
-                direction = 'RIGHT'
+            if(direction != 'LEFT') direction = 'RIGHT'
                 break;
 
             default:
