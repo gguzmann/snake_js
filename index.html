@@ -31,12 +31,14 @@
             position: relative;
             top: 45%;
             left: 40%;
+            border-radius: 15%;
         }
 
         .cola {
             width: 20px;
             height: 20px;
             background-color: blue;
+            border-radius: 15%;
             position: fixed;
         }
 
@@ -44,6 +46,7 @@
             width: 20px;
             height: 20px;
             background-color: green;
+            border-radius: 15%;
             position: relative;
         }
 
@@ -71,6 +74,7 @@
     const player = document.getElementById('hijo');
     const food = document.getElementById('hijo2');
     const scoreText = document.getElementById('score');
+    let move = true;
 
 
     const H = 380;
@@ -87,6 +91,19 @@
 
     function positionFood() {
         const positionRandom = Math.floor(Math.random() * (19 - 1) + 1) * 20;
+        cola.forEach(element => {
+            if (element.offsetTop == positionRandom && element.offsetLeft == positionRandom) {
+                console.log('COMIDA ENCIMA COLA');
+                positionFood();
+                return;
+            }
+        });
+
+        if (player.offsetTop == positionRandom && player.offsetLeft == positionRandom) {
+            console.log('COMIDA ENCIMA PLAYER');
+            positionFood();
+            return;
+        }
         food.style.left = positionRandom + 'px';
         food.style.top = positionRandom + 'px';
     }
@@ -132,8 +149,7 @@
         }
 
         cola.forEach(element => {
-            if(element.offsetTop == player.offsetTop && element.offsetLeft == player.offsetLeft)
-            {
+            if (element.offsetTop == player.offsetTop && element.offsetLeft == player.offsetLeft) {
                 dead();
             }
         })
@@ -155,27 +171,34 @@
     }
 
     document.addEventListener('keydown', (e) => {
-        switch (e.keyCode) {
-            case 83:
-            case 40:
-                if(direction != 'UP') direction = 'DOWN'
-                break;
-            case 87:
-            case 38:
-            if(direction != 'DOWN') direction = 'UP'
-                break;
-            case 65:
-            case 37:
-            if(direction != 'RIGHT') direction = 'LEFT'
-                break;
-            case 68:
-            case 39:
-            if(direction != 'LEFT') direction = 'RIGHT'
-                break;
+        if (move) {
+            switch (e.keyCode) {
+                case 83:
+                case 40:
+                    if(direction != 'UP') 
+                    direction = 'DOWN'
+                    break;
+                case 87:
+                case 38:
+                    if(direction != 'DOWN') 
+                    direction = 'UP'
+                    break;
+                case 65:
+                case 37:
+                    if(direction != 'RIGHT') 
+                    direction = 'LEFT'
+                    break;
+                case 68:
+                case 39:
+                    if(direction != 'LEFT') 
+                    direction = 'RIGHT'
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
 
+            }
+            move = false;
         }
     });
 
@@ -202,6 +225,7 @@
             default:
                 break;
         }
+        move = true;
         eatFoot();
         collapse();
     }, 200);
